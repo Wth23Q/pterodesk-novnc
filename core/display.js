@@ -59,7 +59,7 @@ export default class Display {
 
         // ===== PROPERTIES =====
 
-        this._scale = 1.0;
+        this._scale = 2.0; // Increased default scale
         this._clipViewport = false;
     }
 

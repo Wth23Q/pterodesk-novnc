@@ -1358,13 +1358,9 @@ const UI = {
     updateViewClip() {
         if (!UI.rfb) return;
 
-        const scaling = UI.getSetting('resize') === 'scale';
-
-        // Some platforms have overlay scrollbars that are difficult
-        // to use in our case, which means we have to force panning
-        // FIXME: Working scrollbars can still be annoying to use with
-        //        touch, so we should ideally be able to have both
-        //        panning and scrollbars at the same time
+        const scaling = true; // Always enable scaling
+        UI.rfb.scaleViewport = true; // Enable viewport scaling
+        UI.rfb.clipViewport = false; // Disable viewport clipping
 
         let brokenScrollbars = false;
 
@@ -1375,9 +1371,8 @@ const UI = {
         }
 
         if (scaling) {
-            // Can't be clipping if viewport is scaled to fit
             UI.forceSetting('view_clip', false);
-            UI.rfb.clipViewport  = false;
+            UI.rfb.clipViewport = false;
         } else if (brokenScrollbars) {
             UI.forceSetting('view_clip', true);
             UI.rfb.clipViewport = true;
@@ -1386,8 +1381,6 @@ const UI = {
             UI.rfb.clipViewport = UI.getSetting('view_clip');
         }
 
-        // Changing the viewport may change the state of
-        // the dragging button
         UI.updateViewDrag();
     },
 
