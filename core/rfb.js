@@ -2246,9 +2246,6 @@ export default class RFB extends EventTargetMixin {
             case 'SecurityResult':
                 return this._handleSecurityResult();
 
-            case 'SecurityReason':
-                return this._handleSecurityReason();
-
             case 'ClientInitialisation':
                 this._sock.sQpush8(this._shared ? 1 : 0); // ClientInitialisation
                 this._sock.flush();
@@ -2261,6 +2258,33 @@ export default class RFB extends EventTargetMixin {
             default:
                 return this._fail("Unknown init state (state: " +
                                   this._rfbInitState + ")");
+        }
+    }
+
+    _initMessage() {
+        switch (this._rfbInitState) {
+            case 'ProtocolVersion':
+                return this._negotiateProtocolVersion();
+            
+            case 'Security':
+                return this._negotiateSecurity();
+            
+            case 'Authentication':
+                return this._negotiateAuthentication();
+            
+            case 'SecurityResult':
+                return this._handleSecurityResult();
+            
+            case 'ClientInitialisation':
+                this._sock.send([this._shared ? 1 : 0]); // ClientInitialisation
+                this._rfbInitState = 'ServerInitialisation';
+                return true;
+            
+            case 'ServerInitialisation':
+                return this._negotiateServerInit();
+            
+            default:
+                return this._handleRect();
         }
     }
 

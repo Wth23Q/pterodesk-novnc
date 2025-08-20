@@ -1,10 +1,12 @@
 name: Publish
 
 on:
-  push:
-  pull_request:
-  release:
-    types: [published]
+  workflow_dispatch:
+  # Disabled automatic triggers
+  # push:
+  # pull_request:
+  # release:
+  #   types: [published]
 
 jobs:
   npm:
@@ -18,7 +20,6 @@ jobs:
         if: github.event_name != 'release'
       - uses: actions/setup-node@v4
         with:
-          # Needs to be explicitly specified for auth to work
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
       - uses: actions/upload-artifact@v4
@@ -46,6 +47,7 @@ jobs:
           github.repository == 'novnc/noVNC' &&
           github.event_name == 'push' &&
           github.event.ref == 'refs/heads/master'
+
   snap:
     runs-on: ubuntu-latest
     steps:
